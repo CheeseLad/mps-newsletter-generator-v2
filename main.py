@@ -1,8 +1,28 @@
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
+from bs4 import BeautifulSoup
+from utils import download_google_doc_as_zip
+import re
+import os
 
 env = Environment(loader=FileSystemLoader("."))
 template = env.get_template("template.html")
+
+doc_url = "https://docs.google.com/document/d/1vmsdriH4-ja0w6CeFglsO0xTciEgwcrfnGnQdMqfIBE/edit?tab=t.0"
+output_folder = ".\\tmp"
+
+os.makedirs(output_folder, exist_ok=True)
+download_google_doc_as_zip(doc_url, output_folder)
+
+for filename in os.listdir(output_folder):
+    if filename.endswith(".html"):
+        html_path = os.path.join(output_folder, filename)
+        break
+
+with open(html_path, "r", encoding="utf-8") as f:
+    print(f"Reading HTML from: {html_path}")
+    html = f.read()
+soup = BeautifulSoup(html, "html.parser")
 
 image_mappings = {
     "logo": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/74b4d2c7-4ad7-82f8-8f41-b279d552422a.png",
@@ -22,13 +42,6 @@ image_mappings = {
     "webmaster": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/e8762186-4454-ec31-ae62-241689058a44.png",
     "first-year-rep": ""
 }
-
-from bs4 import BeautifulSoup
-import re
-
-with open("doc.html", "r", encoding="utf-8") as f:
-    html = f.read()
-soup = BeautifulSoup(html, "html.parser")
 
 sections = [
     "EMAIL SUBJECT",
@@ -100,7 +113,7 @@ for section in results:
         section_image = image_mappings.get(section.replace(" ", "-").lower(), "")
         content = results[section][0].replace("\n", "<br>")
         if section == "SPONSORSHIP":
-            content = content.replace("The Kiss of Venus - Paul McCartney and Dominic Fike", " <a href='https://open.spotify.com/track/28kOGtTZzbfQ8fMmTwjRFq?si=FcipfIegQbK8pZnPBVspSg'>The Kiss of Venus - Paul McCartney and Dominic Fike</a>")
+            content = content.replace("Silver Dagger - Charley Crockett", " <a href='https://open.spotify.com/track/3sQbArSXY6C0YxUIrSBuNb?si=992c96cee0954b3e'>Silver Dagger - Charley Crockett</a>")
 
         if section == "THE COLLEGE VIEW":
             content += "<br><br><img src='https://i.imgur.com/0GO4IEt.png' style='width: 300px'></img>"
@@ -113,7 +126,7 @@ for section in results:
     
 
 context = {
-    "email_subject": "SEMESTER 2 WEEK 7",
+    "email_subject": results.get("EMAIL SUBJECT", ["MPS Weekly Newsletter"])[0],
     "header_image": image_mappings["logo"],
     "email_start": "You've got mail! The MPS Weekly Email has hit your inbox! ",
     "sections": sections,
@@ -123,5 +136,8 @@ context = {
 
 rendered_html = template.render(context)
 
-with open("output.html", "w", encoding="utf-8") as f:
+output_file = "output.html"
+
+with open(output_file, "w", encoding="utf-8") as f:
+    print(f"Writing output to: {output_file}")
     f.write(rendered_html)
