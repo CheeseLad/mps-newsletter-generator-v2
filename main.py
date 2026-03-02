@@ -94,15 +94,13 @@ sections = []
 sections.append({
     "title": "SECRETARY",
     "image": image_mappings["secretary"],
-    "content": """Hey y’all! Hope you had a wonderful weekend and are enjoying the start of reading week! Can't believe it's only a few days to Berlin! 👀<br><br>
-
-        🇩🇪 Berlin Countdown - 4 days! 🇩🇪<br><br>
+    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful weekend and are well rested after reading week! And to anyone who came to Berlin with us, hope you had an excellent time, I know I did!<br><br>
 
         🐱 Cat of the Week 🐱<br><br>
 
-        <img src='https://i.imgur.com/CHieRtj.gif' style='width: 300px'></img><br><br>
+        <img src='https://i.imgur.com/BzmTySr.gif' style='width: 300px'></img><br><br>
 
-        POV: You flying on the plane to Berlin on Thursday!<br><br>
+        POV: You trying to think of the answers at our Pub Quiz on Thursday!<br><br>
 
         See you on the flippity flop,<br>
         Jake 📩""",
@@ -112,11 +110,13 @@ for section in results:
     if not section.startswith("EMAIL") and len(results[section][0].strip()) != 0:
         section_image = image_mappings.get(section.replace(" ", "-").lower(), "")
         content = results[section][0].replace("\n", "<br>")
+        if section == "CHAIRPERSON":
+            content = content.replace("https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers", " <a href='https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers'>https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers</a>")
         if section == "SPONSORSHIP":
             content = content.replace("Silver Dagger - Charley Crockett", " <a href='https://open.spotify.com/track/3sQbArSXY6C0YxUIrSBuNb?si=992c96cee0954b3e'>Silver Dagger - Charley Crockett</a>")
 
-        if section == "THE COLLEGE VIEW":
-            content += "<br><br><img src='https://i.imgur.com/0GO4IEt.png' style='width: 300px'></img>"
+        #if section == "THE COLLEGE VIEW":
+        #    content += "<br><br><img src='https://i.imgur.com/0GO4IEt.png' style='width: 300px'></img>"
 
         sections.append({
             "title": section,
@@ -131,6 +131,7 @@ context = {
     "email_start": "You've got mail! The MPS Weekly Email has hit your inbox! ",
     "sections": sections,
     "UnsubscribeURL": "{{ UnsubscribeURL }}",
+    "TrackView": "{{ TrackView }}",
     "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 }
 
