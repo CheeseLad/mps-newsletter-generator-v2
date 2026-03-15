@@ -8,8 +8,23 @@ import os
 env = Environment(loader=FileSystemLoader("."))
 template = env.get_template("template.html")
 
-doc_url = "https://docs.google.com/document/d/1vmsdriH4-ja0w6CeFglsO0xTciEgwcrfnGnQdMqfIBE/edit?tab=t.0"
+doc_url = "https://docs.google.com/document/d/1eBwbjuPo0egnXPZXPpUGIhLrIkX4nmrkksercEUeZ7E/edit?usp=sharing"
 output_folder = ".\\tmp"
+
+delete = False
+
+if delete:
+    for filename in os.listdir(output_folder):
+        file_path = os.path.join(output_folder, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                os.rmdir(file_path)
+        except Exception as e:
+            print(f"Failed to delete {file_path}. Reason: {e}")
+
+    os.rmdir(output_folder)
 
 os.makedirs(output_folder, exist_ok=True)
 download_google_doc_as_zip(doc_url, output_folder)
@@ -94,13 +109,13 @@ sections = []
 sections.append({
     "title": "SECRETARY",
     "image": image_mappings["secretary"],
-    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful weekend and are well rested after reading week! And to anyone who came to Berlin with us, hope you had an excellent time, I know I did!<br><br>
+    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful weekend! Have you ever wondered how to setup and use the software behind how we stream the radio shows and broadcasts? Well I've got the event for you!<br><br> This Tuesday in CG12 I'll be hosting a workshop on how to build your own broadcast using OBS for streaming to YouTube/Twitch! Feel free to bring your laptop with you if you'd like to follow along with the workshop!<br><br>
 
         🐱 Cat of the Week 🐱<br><br>
 
-        <img src='https://i.imgur.com/BzmTySr.gif' style='width: 300px'></img><br><br>
+        <img src='https://i.imgur.com/pxbwWls.gif' style='width: 300px'></img><br><br>
 
-        POV: You trying to think of the answers at our Pub Quiz on Thursday!<br><br>
+        POV: You setting up OBS at our event on Tuesday!<br><br>
 
         See you on the flippity flop,<br>
         Jake 📩""",
@@ -110,13 +125,16 @@ for section in results:
     if not section.startswith("EMAIL") and len(results[section][0].strip()) != 0:
         section_image = image_mappings.get(section.replace(" ", "-").lower(), "")
         content = results[section][0].replace("\n", "<br>")
-        if section == "CHAIRPERSON":
-            content = content.replace("https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers", " <a href='https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers'>https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers</a>")
+        #if section == "CHAIRPERSON":
+        #    content = content.replace("https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers", " <a href='https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers'>https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers</a>")
         if section == "SPONSORSHIP":
-            content = content.replace("Silver Dagger - Charley Crockett", " <a href='https://open.spotify.com/track/3sQbArSXY6C0YxUIrSBuNb?si=992c96cee0954b3e'>Silver Dagger - Charley Crockett</a>")
+            content = content.replace("Solas - Seo Linn", " <a href='https://open.spotify.com/track/45FlzGlQrfRXtY0ofXXbfp?si=LEjDqtqbRCKa1J6f-dhGIA'>Solas - Seo Linn</a> ")
 
         #if section == "THE COLLEGE VIEW":
         #    content += "<br><br><img src='https://i.imgur.com/0GO4IEt.png' style='width: 300px'></img>"
+
+        if section == "FM MANAGERS":
+             content = content.replace("https://forms.gle/i4UXSu8v5zkmXfcY7", " <a href='https://forms.gle/i4UXSu8v5zkmXfcY7'>https://forms.gle/i4UXSu8v5zkmXfcY7</a> ")
 
         sections.append({
             "title": section,
