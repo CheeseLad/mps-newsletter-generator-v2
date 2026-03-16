@@ -109,13 +109,15 @@ sections = []
 sections.append({
     "title": "SECRETARY",
     "image": image_mappings["secretary"],
-    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful weekend! Have you ever wondered how to setup and use the software behind how we stream the radio shows and broadcasts? Well I've got the event for you!<br><br> This Tuesday in CG12 I'll be hosting a workshop on how to build your own broadcast using OBS for streaming to YouTube/Twitch! Feel free to bring your laptop with you if you'd like to follow along with the workshop!<br><br>
+    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful weekend and are looking forward to St. Patrick's Day! Thanks everyone for coming to Broadcraft last week, I really enjoyed teaching you all about the ins and outs of OBS!<br><br>
+    
+        Did you love Seek n Stream? Well you're in luck as it's time for Seek n Stream round 2, this time with an FM twist!<br><br>
 
         🐱 Cat of the Week 🐱<br><br>
 
-        <img src='https://i.imgur.com/pxbwWls.gif' style='width: 300px'></img><br><br>
+        <img src='https://i.imgur.com/lRRgHGY.gif' style='width: 300px'></img><br><br>
 
-        POV: You setting up OBS at our event on Tuesday!<br><br>
+        POV: You listening out for clues on DCUfm at Radio Relay on Thursday!<br><br>
 
         See you on the flippity flop,<br>
         Jake 📩""",
