@@ -8,7 +8,7 @@ import os
 env = Environment(loader=FileSystemLoader("."))
 template = env.get_template("template.html")
 
-doc_url = "https://docs.google.com/document/d/1236ugJn7R1NEb-FwpN7qebk_bnNlm7VytU2DPEM3tLE/edit?usp=sharing"
+doc_url = "https://docs.google.com/document/d/1ba798SXLk3utDNz3dUzYOGaqkXq4YuE918FD1a73GGk/edit?usp=drivesdk"
 output_folder = ".\\tmp"
 
 delete = False
@@ -109,20 +109,15 @@ sections = []
 sections.append({
     "title": "SECRETARY",
     "image": image_mappings["secretary"],
-    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful weekend! You better be ready because it's time for the 12 HOUR BROADCAST!!! Get your show forms in, join the subcommittees (I hear tech is where it's at 😉) and donate to Clare's Wish Foundation!<br><br>
-    
-        Here's all the details about the remaining events this semester, I can't believe it's that time already 😢<br><br>
+    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful weekend! Between the Student Impact Awards (Congrats Sophie King on winning individual contribution for MPS!), the 12 Hour Broadcast (Where we raised €3388 for Clare's Wish Foundation!), the DCU Graduations Livestreaming, and the broadcast afterparty it was quite a busy week here at MPS!<br><br>
 
-        - DCUFM 12 Hour Broadcast (Thu 26th Mar at 09:00-21:00) - FM Studio and Pairc, U Building<br>
-        - 12 Hour Broadcast Afterparty (Fri 27th Mar at 19:00-23:55) - The Slipper<br>
-        - Committee Chit Chat (Thu 2nd Apr at 18:30-21:00) - FTG09, Polairs Building<br>
-        - AGM - Annual General Meeting (Tue 7th Apr at 18:00-22:00) - GC12, Henry Gratton<br><br>
+        A big thank you to everyone who was involved with the tech subcommittee for the 12 Hour Broadcast! Whether you were operating a camera, sitting on the tech floor pillow switching the cameras, or saving the broadcast with cables and adapters, we really appreciated your help and couldn't have done it without you!<br><br>
 
         🐱 Cat of the Week 🐱<br><br>
 
-        <img src='https://i.imgur.com/WaVqua0.gif' style='width: 300px'></img><br><br>
+        <img src='https://i.imgur.com/OF0cMuu.gif' style='width: 300px'></img><br><br>
 
-        POV: You hosting your radio show during the DCUfm 12 Hour Broadcast on Thursday!<br><br>
+        POV: You asking the committee questions about their roles at Committee Chitchat on Thursday!<br><br>
 
         See you on the flippity flop,<br>
         Jake 📩""",
@@ -135,16 +130,16 @@ for section in results:
         #if section == "CHAIRPERSON":
         #    content = content.replace("https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers", " <a href='https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers'>https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers</a>")
         if section == "SPONSORSHIP":
-            content = content.replace("Tears Dry On Their Own - Amy Winehouse", " <a href='https://open.spotify.com/track/70fKHdKmhaBJABFcVyDnfa?si=2BwHWgfISyKU_g0g81IEHg&context=spotify%3Aplaylist%3A37i9dQZF1EpxiTpOKMzEok'>Tears Dry On Their Own - Amy Winehouse</a> ")
+            content = content.replace("Photo ID - Remi Wolf", " <a href='https://open.spotify.com/track/0bhciG1J5Mn3aIfPjvHQIe?si=FgdUnoAISdaYzfoWTkUkTQ'>Photo ID - Remi Wolf</a> ")
 
         #if section == "THE COLLEGE VIEW":
         #    content += "<br><br><img src='https://i.imgur.com/0GO4IEt.png' style='width: 300px'></img>"
 
-        if section == "FM MANAGERS":
-             content = content.replace("https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk", " <a href='https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk'>https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk</a> ")
+        #if section == "FM MANAGERS":
+        #     content = content.replace("https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk", " <a href='https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk'>https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk</a> ")
 
-        if section == "TV MANAGERS":
-             content = content.replace("https://docs.google.com/forms/d/e/1FAIpQLSd1_omb2rPsyBgw72zy7uu5c0kYjS7LaMy7EP3wNrw3W7iRHw/viewform", " <a href='https://docs.google.com/forms/d/e/1FAIpQLSd1_omb2rPsyBgw72zy7uu5c0kYjS7LaMy7EP3wNrw3W7iRHw/viewform'>https://docs.google.com/forms/d/e/1FAIpQLSd1_omb2rPsyBgw72zy7uu5c0kYjS7LaMy7EP3wNrw3W7iRHw/viewform</a> ")
+        #if section == "TV MANAGERS":
+        #     content = content.replace("https://docs.google.com/forms/d/e/1FAIpQLSd1_omb2rPsyBgw72zy7uu5c0kYjS7LaMy7EP3wNrw3W7iRHw/viewform", " <a href='https://docs.google.com/forms/d/e/1FAIpQLSd1_omb2rPsyBgw72zy7uu5c0kYjS7LaMy7EP3wNrw3W7iRHw/viewform'>https://docs.google.com/forms/d/e/1FAIpQLSd1_omb2rPsyBgw72zy7uu5c0kYjS7LaMy7EP3wNrw3W7iRHw/viewform</a> ")
 
         sections.append({
             "title": section,
