@@ -8,7 +8,7 @@ import os
 env = Environment(loader=FileSystemLoader("."))
 template = env.get_template("template.html")
 
-doc_url = "https://docs.google.com/document/d/1ba798SXLk3utDNz3dUzYOGaqkXq4YuE918FD1a73GGk/edit?usp=drivesdk"
+doc_url = "https://docs.google.com/document/d/1kKbbjANSRSnsGQf0-XdIRBYSrONuvOrrXCJxnKKNLk4/edit?usp=sharing"
 output_folder = ".\\tmp"
 
 delete = False
@@ -52,7 +52,7 @@ image_mappings = {
     "the-college-view": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/8d6a0545-1ec7-c4fc-f53e-38e365fab219.png",
     "tcv-members-section": "",
     "pro": "",
-    "treasurer": "",
+    "treasurer": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/562e070c-25e7-deec-ba02-1c28334344da.png",
     "sponsorship": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/7dbec0d8-26a5-389c-41dd-8cfbf5acf780.png",
     "webmaster": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/e8762186-4454-ec31-ae62-241689058a44.png",
     "first-year-rep": ""
@@ -106,22 +106,22 @@ for p in soup.find_all("p"):
 
 sections = []
 
-sections.append({
-    "title": "SECRETARY",
-    "image": image_mappings["secretary"],
-    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful weekend! Between the Student Impact Awards (Congrats Sophie King on winning individual contribution for MPS!), the 12 Hour Broadcast (Where we raised €3388 for Clare's Wish Foundation!), the DCU Graduations Livestreaming, and the broadcast afterparty it was quite a busy week here at MPS!<br><br>
-
-        A big thank you to everyone who was involved with the tech subcommittee for the 12 Hour Broadcast! Whether you were operating a camera, sitting on the tech floor pillow switching the cameras, or saving the broadcast with cables and adapters, we really appreciated your help and couldn't have done it without you!<br><br>
-
-        🐱 Cat of the Week 🐱<br><br>
-
-        <img src='https://i.imgur.com/OF0cMuu.gif' style='width: 300px'></img><br><br>
-
-        POV: You asking the committee questions about their roles at Committee Chitchat on Thursday!<br><br>
-
-        See you on the flippity flop,<br>
-        Jake 📩""",
-})
+#sections.append({
+#    "title": "SECRETARY",
+#    "image": image_mappings["secretary"],
+#    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful weekend! Between the Student Impact Awards (Congrats Sophie King on winning individual contribution for MPS!), the 12 Hour Broadcast (Where we raised €3388 for Clare's Wish Foundation!), the DCU Graduations Livestreaming, and the broadcast afterparty it was quite a busy week here at MPS!<br><br>
+#
+#        A big thank you to everyone who was involved with the tech subcommittee for the 12 Hour Broadcast! Whether you were operating a camera, sitting on the tech floor pillow switching the cameras, or saving the broadcast with cables and adapters, we really appreciated your help and couldn't have done it without you!<br><br>
+#
+#        🐱 Cat of the Week 🐱<br><br>
+#
+#        <img src='https://i.imgur.com/OF0cMuu.gif' style='width: 300px'></img><br><br>
+#
+#        POV: You asking the committee questions about their roles at Committee Chitchat on Thursday!<br><br>
+#
+#        See you on the flippity flop,<br>
+#        Jake 📩""",
+#})
 
 for section in results:
     if not section.startswith("EMAIL") and len(results[section][0].strip()) != 0:
@@ -130,7 +130,7 @@ for section in results:
         #if section == "CHAIRPERSON":
         #    content = content.replace("https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers", " <a href='https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers'>https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers</a>")
         if section == "SPONSORSHIP":
-            content = content.replace("Photo ID - Remi Wolf", " <a href='https://open.spotify.com/track/0bhciG1J5Mn3aIfPjvHQIe?si=FgdUnoAISdaYzfoWTkUkTQ'>Photo ID - Remi Wolf</a> ")
+            content = content.replace("‘tis I, your SPONSORSHIP OFFICER! 😛😛", "‘tis I, your SPONSORSHIP OFFICER! 😛😛<br><br><img src='https://i.imgur.com/DBXQXgr.png' style='width: 300px'></img>")
 
         #if section == "THE COLLEGE VIEW":
         #    content += "<br><br><img src='https://i.imgur.com/0GO4IEt.png' style='width: 300px'></img>"
@@ -138,8 +138,8 @@ for section in results:
         #if section == "FM MANAGERS":
         #     content = content.replace("https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk", " <a href='https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk'>https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk</a> ")
 
-        #if section == "TV MANAGERS":
-        #     content = content.replace("https://docs.google.com/forms/d/e/1FAIpQLSd1_omb2rPsyBgw72zy7uu5c0kYjS7LaMy7EP3wNrw3W7iRHw/viewform", " <a href='https://docs.google.com/forms/d/e/1FAIpQLSd1_omb2rPsyBgw72zy7uu5c0kYjS7LaMy7EP3wNrw3W7iRHw/viewform'>https://docs.google.com/forms/d/e/1FAIpQLSd1_omb2rPsyBgw72zy7uu5c0kYjS7LaMy7EP3wNrw3W7iRHw/viewform</a> ")
+        if section == "TV MANAGERS":
+             content = content.replace("https://www.twitch.tv/dcumps", " <a href='https://www.twitch.tv/dcumps'>https://www.twitch.tv/dcumps</a> ")
 
         sections.append({
             "title": section,
@@ -151,10 +151,12 @@ for section in results:
 context = {
     "email_subject": results.get("EMAIL SUBJECT", ["MPS Weekly Newsletter"])[0],
     "header_image": image_mappings["logo"],
-    "email_start": "You've got mail! The MPS Weekly Email has hit your inbox! ",
+    "email_start": "You've got mail! The ONE OF A KIND MPS SWAP WEEK Email has hit your inbox!",
+    "email_end": "SARAH DUFF #SAZTHESECRETARY",
     "sections": sections,
     "UnsubscribeURL": "{{ UnsubscribeURL }}",
     "TrackView": "{{ TrackView }}",
+    "MessageURL": "{{ MessageURL }}",
     "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 }
 
