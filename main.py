@@ -8,7 +8,7 @@ import os
 env = Environment(loader=FileSystemLoader("."))
 template = env.get_template("template.html")
 
-doc_url = "https://docs.google.com/document/d/1kKbbjANSRSnsGQf0-XdIRBYSrONuvOrrXCJxnKKNLk4/edit?usp=sharing"
+doc_url = "https://docs.google.com/document/d/11uTgoWKpr1yEVslZfo3zmMGJFqaHGRg7oaGuQMULCi0/edit?usp=sharing"
 output_folder = ".\\tmp"
 
 delete = False
@@ -51,7 +51,7 @@ image_mappings = {
     "fm-members-section": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/6020c12c-6a7e-e4bd-1840-158a508d26b8.png",
     "the-college-view": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/8d6a0545-1ec7-c4fc-f53e-38e365fab219.png",
     "tcv-members-section": "",
-    "pro": "",
+    "pro": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/b5f2b6bd-6ba8-908b-31ee-cf6e4222c2da.png",
     "treasurer": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/562e070c-25e7-deec-ba02-1c28334344da.png",
     "sponsorship": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/7dbec0d8-26a5-389c-41dd-8cfbf5acf780.png",
     "webmaster": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/e8762186-4454-ec31-ae62-241689058a44.png",
@@ -106,22 +106,24 @@ for p in soup.find_all("p"):
 
 sections = []
 
-#sections.append({
-#    "title": "SECRETARY",
-#    "image": image_mappings["secretary"],
-#    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful weekend! Between the Student Impact Awards (Congrats Sophie King on winning individual contribution for MPS!), the 12 Hour Broadcast (Where we raised €3388 for Clare's Wish Foundation!), the DCU Graduations Livestreaming, and the broadcast afterparty it was quite a busy week here at MPS!<br><br>
-#
-#        A big thank you to everyone who was involved with the tech subcommittee for the 12 Hour Broadcast! Whether you were operating a camera, sitting on the tech floor pillow switching the cameras, or saving the broadcast with cables and adapters, we really appreciated your help and couldn't have done it without you!<br><br>
-#
-#        🐱 Cat of the Week 🐱<br><br>
-#
-#        <img src='https://i.imgur.com/OF0cMuu.gif' style='width: 300px'></img><br><br>
-#
-#        POV: You asking the committee questions about their roles at Committee Chitchat on Thursday!<br><br>
-#
-#        See you on the flippity flop,<br>
-#        Jake 📩""",
-#})
+sections.append({
+    "title": "SECRETARY",
+    "image": image_mappings["secretary"],
+    "content": """Hey {{ .Subscriber.FirstName }}! Hope you had a wonderful Easter weekend! I can't believe it's time for the last MPS newsletter of 25/26, where has the time gone? <br><br>
+
+        Just wanted to say thanks to each and every one of you for making my experience in MPS so special. It's been a great 4 years of MPS and 3 years on committee,  I've met so many awesome people and have learned so much throughout the years. I'm so glad I discovered MPS during the clubs and socs fair back in first year, can't imagine my college experience without it! Love you all 🫶 🫶<br><br>
+
+        For anyone who hasn't checked out the DCUtv 24/7 Broadcast I launched as part of Swap Week, you can find it here: <a href='https://www.twitch.tv/dcumps'>https://www.twitch.tv/dcumps</a> <br> I'll be closing it at the AGM so tune in before it's gone! <br><br>
+
+        🐱 THE FINAL Cat of the Week 🐱<br><br>
+
+        <img src='https://i.imgur.com/zxMewpB.gif' style='width: 300px'></img><br><br>
+
+        POV: You giving your speeches at the AGM on Tuesday!<br><br>
+
+        See you on the flippity flop,<br>
+        Jake 📩""",
+})
 
 for section in results:
     if not section.startswith("EMAIL") and len(results[section][0].strip()) != 0:
@@ -129,17 +131,17 @@ for section in results:
         content = results[section][0].replace("\n", "<br>")
         #if section == "CHAIRPERSON":
         #    content = content.replace("https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers", " <a href='https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers'>https://www.dcu.ie/dcu-community/dcu-events/2026/feb/school-communications-alumni-perspectives-navigating-careers</a>")
-        if section == "SPONSORSHIP":
-            content = content.replace("‘tis I, your SPONSORSHIP OFFICER! 😛😛", "‘tis I, your SPONSORSHIP OFFICER! 😛😛<br><br><img src='https://i.imgur.com/DBXQXgr.png' style='width: 300px'></img>")
+        if section == "CHAIRPERSON":
+            content = content.replace("I shall see you all at the AGM for the grand finale…", "I shall see you all at the AGM for the grand finale…<br><br><img src='https://i.imgur.com/ioDZylj.png' style='width: 300px'></img>")
 
         #if section == "THE COLLEGE VIEW":
         #    content += "<br><br><img src='https://i.imgur.com/0GO4IEt.png' style='width: 300px'></img>"
 
-        #if section == "FM MANAGERS":
-        #     content = content.replace("https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk", " <a href='https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk'>https://docs.google.com/forms/d/1OMozV3SYvtkzf00oCu8gWag4MYPYIE1RxBH9yeeblTc/edit?usp=drivesdk</a> ")
+        if section == "SPONSORSHIP":
+             content = content.replace("Attracted to You - Pink Pantheress", " <a href='https://open.spotify.com/album/3tY6ZOPhcl9B5HVVhs7GkC?si=rA7Xnn6FQWqboEkwzqBapQ'>Attracted to You - Pink Pantheress</a> ")
 
-        if section == "TV MANAGERS":
-             content = content.replace("https://www.twitch.tv/dcumps", " <a href='https://www.twitch.tv/dcumps'>https://www.twitch.tv/dcumps</a> ")
+        #if section == "TV MANAGERS":
+        #     content = content.replace("https://www.twitch.tv/dcumps", " <a href='https://www.twitch.tv/dcumps'>https://www.twitch.tv/dcumps</a> ")
 
         sections.append({
             "title": section,
@@ -151,8 +153,8 @@ for section in results:
 context = {
     "email_subject": results.get("EMAIL SUBJECT", ["MPS Weekly Newsletter"])[0],
     "header_image": image_mappings["logo"],
-    "email_start": "You've got mail! The ONE OF A KIND MPS SWAP WEEK Email has hit your inbox!",
-    "email_end": "SARAH DUFF #SAZTHESECRETARY",
+    "email_start": results.get("EMAIL START")[0],
+    "email_end": "Jake Farrell",
     "sections": sections,
     "UnsubscribeURL": "{{ UnsubscribeURL }}",
     "TrackView": "{{ TrackView }}",
