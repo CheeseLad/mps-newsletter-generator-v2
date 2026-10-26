@@ -1,6 +1,8 @@
 from jinja2 import Environment, FileSystemLoader
 from datetime import datetime
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
+from urllib.parse import urlparse, parse_qs
+import copy
 from utils import download_google_doc_as_zip
 import re
 import os
@@ -39,7 +41,7 @@ with open(html_path, "r", encoding="utf-8") as f:
     html = f.read()
 soup = BeautifulSoup(html, "html.parser")
 
-image_mappings = {
+"""image_mappings = {
     "logo": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/74b4d2c7-4ad7-82f8-8f41-b279d552422a.png",
     "secretary": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/8d4bd131-a7d3-d418-91f2-8870248968fc.png",
     "chairperson": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/8b690a41-5bd9-fe79-65d1-25060d854f40.png",
@@ -56,7 +58,28 @@ image_mappings = {
     "sponsorship": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/7dbec0d8-26a5-389c-41dd-8cfbf5acf780.png",
     "webmaster": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/e8762186-4454-ec31-ae62-241689058a44.png",
     "first-year-rep": ""
+}"""
+
+### 2026-2027
+image_mappings = {
+    "logo": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/74b4d2c7-4ad7-82f8-8f41-b279d552422a.png",
+    "secretary": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/aadc7fc8-d98d-d950-2e47-b56fd1e65270.jpg",
+    "chairperson": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/19a7b1c4-a27e-3072-786c-237b706f01bb.jpg",
+    "vice-chair": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/9bc7bbfd-659a-25f9-c73c-1851f95cd28b.jpg",
+    "events": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/0cc4c6f1-2bef-a941-bf51-5caddaaf6d24.png",
+    "tv-managers": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/5be7da8a-9fd2-e145-2ab7-ee8fcc554219.jpg",
+    "tv-members-section": "",
+    "fm-managers": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/e89e3b5d-0bf1-64ef-4db5-ae20c3cf15a9.jpg",
+    "fm-members-section": "",
+    "the-college-view": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/fdc09314-3205-726d-438c-5cdd050adefe.jpg",
+    "tcv-members-section": "",
+    "pro": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/1ad165f5-24b0-f171-6582-89d6206e0d7c.jpg",
+    "treasurer": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/6466b48d-61f4-d955-2eee-45e5d305abcd.jpg",
+    "sponsorship": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/1b3e7d6f-7b0c-a1f8-58c1-0c12d56c5007.jpg",
+    "webmaster": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/05eecf5c-0fee-3f07-d263-a07ead959152.jpg",
+    "first-year-rep": "https://mcusercontent.com/a6300fadb6d053a90ae600e49/images/40816cf7-dd4d-1212-6691-3bef2a4e5913.jpg"
 }
+
 
 sections = [
     "EMAIL SUBJECT",
@@ -79,6 +102,82 @@ sections = [
     "EMAIL END"
 ]
 
+def clean_google_url(url):
+    if not url:
+        return ""
+    parsed = urlparse(url)
+    if "google." in parsed.netloc and parsed.path == "/url":
+        qs = parse_qs(parsed.query)
+        if "q" in qs:
+            return qs["q"][0]
+    return url
+
+
+def linkify_text(soup_ctx, text_node):
+    if text_node.find_parent("a"):
+        return
+    text = str(text_node)
+    pattern = re.compile(r'(https?://[^\s<>"]+)')
+    matches = list(pattern.finditer(text))
+    if not matches:
+        return
+
+    new_elements = []
+    last_idx = 0
+    for match in matches:
+        start, end = match.span()
+        url = match.group(1)
+        trailing_punct = ""
+        while url and url[-1] in ".,!?:;":
+            trailing_punct = url[-1] + trailing_punct
+            url = url[:-1]
+        if url.endswith(")") and "(" not in url:
+            trailing_punct = ")" + trailing_punct
+            url = url[:-1]
+
+        if start > last_idx:
+            new_elements.append(NavigableString(text[last_idx:start]))
+
+        a_tag = soup_ctx.new_tag("a", href=url)
+        a_tag.string = url
+        new_elements.append(a_tag)
+
+        if trailing_punct:
+            new_elements.append(NavigableString(trailing_punct))
+
+        last_idx = end
+
+    if last_idx < len(text):
+        new_elements.append(NavigableString(text[last_idx:]))
+
+    for elem in reversed(new_elements):
+        text_node.insert_after(elem)
+    text_node.extract()
+
+
+def extract_paragraph_html(soup_ctx, p_elem):
+    p = copy.copy(p_elem)
+
+    # 1. Clean existing <a> tags (unwrap Google redirects, remove Docs styles)
+    for a in p.find_all("a"):
+        clean_url = clean_google_url(a.get("href", ""))
+        a.attrs = {"href": clean_url}
+        for inner in a.find_all(True):
+            inner.unwrap()
+
+    # 2. Unwrap non-link / non-br formatting tags from Google Docs (like span, font)
+    for tag in p.find_all(True):
+        if tag.name not in ["a", "br"]:
+            tag.unwrap()
+
+    # 3. Auto-link any plain URLs not inside an <a> tag
+    text_nodes = [s for s in p.strings if s.parent.name != "a"]
+    for s in text_nodes:
+        linkify_text(soup_ctx, s)
+
+    return p.decode_contents().strip()
+
+
 role_pattern = re.compile(
     r"^\s*—\s*(" + "|".join(map(re.escape, sections)) + r")\b"
 )
@@ -100,7 +199,10 @@ for p in soup.find_all("p"):
                 break
 
             if next_text:
-                collected.append(next_text)
+                if current_role == "EMAIL SUBJECT":
+                    collected.append(next_text)
+                else:
+                    collected.append(extract_paragraph_html(soup, element))
 
         results.setdefault(current_role, []).append("\n\n".join(collected))
 
@@ -137,8 +239,8 @@ for section in results:
         #if section == "THE COLLEGE VIEW":
         #    content += "<br><br><img src='https://i.imgur.com/0GO4IEt.png' style='width: 300px'></img>"
 
-        if section == "SPONSORSHIP":
-             content = content.replace("Attracted to You - Pink Pantheress", " <a href='https://open.spotify.com/album/3tY6ZOPhcl9B5HVVhs7GkC?si=rA7Xnn6FQWqboEkwzqBapQ'>Attracted to You - Pink Pantheress</a> ")
+
+
 
         #if section == "TV MANAGERS":
         #     content = content.replace("https://www.twitch.tv/dcumps", " <a href='https://www.twitch.tv/dcumps'>https://www.twitch.tv/dcumps</a> ")
@@ -150,19 +252,43 @@ for section in results:
         })
     
 
-context = {
+context_2025_2026 = {
     "email_subject": results.get("EMAIL SUBJECT", ["MPS Weekly Newsletter"])[0],
     "header_image": image_mappings["logo"],
     "email_start": results.get("EMAIL START")[0],
     "email_end": "Jake Farrell",
+    "email_end_role": "DCU Media Production Society Secretary 25/26",
+    "copyright_year": datetime.now().year,
     "sections": sections,
+    "section_border_color": "#f7b4f1",
+    "section_border_colour": "#f7b4f1",
+    "section_background_color": "#49408d",
+    "section_background_colour": "#49408d",
     "UnsubscribeURL": "{{ UnsubscribeURL }}",
     "TrackView": "{{ TrackView }}",
     "MessageURL": "{{ MessageURL }}",
     "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 }
 
-rendered_html = template.render(context)
+context_2026_2027 = {
+    "email_subject": results.get("EMAIL SUBJECT", ["MPS Weekly Newsletter"])[0],
+    "header_image": image_mappings["logo"],
+    "email_start": results.get("EMAIL START")[0],
+    "email_end": "Seren Hassett Hilliard",
+    "email_end_role": "DCU Media Production Society Secretary 26/27",
+    "copyright_year": datetime.now().year,
+    "sections": sections,
+    "section_border_color": "#0D4C8F",
+    "section_border_colour": "#0D4C8F",
+    "section_background_color": "#7EA3E2",
+    "section_background_colour": "#7EA3E2",
+    "UnsubscribeURL": "{{ UnsubscribeURL }}",
+    "TrackView": "{{ TrackView }}",
+    "MessageURL": "{{ MessageURL }}",
+    "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+}
+
+rendered_html = template.render(context_2026_2027)
 
 output_file = "output.html"
 

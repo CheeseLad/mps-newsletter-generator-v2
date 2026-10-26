@@ -183,7 +183,7 @@
         text-align: center;
       }
       #templateHeader {
-        background-color: #49408d;
+        background-color: {{ section_background_color }};
         background-image: none;
         background-repeat: no-repeat;
         background-position: 50% 50%;
@@ -219,7 +219,7 @@
         text-decoration: underline;
       }
       #templateBody {
-        background-color: #49408d;
+        background-color: {{ section_background_color }};
         background-image: none;
         background-repeat: no-repeat;
         background-position: center;
@@ -255,7 +255,7 @@
         text-decoration: underline;
       }
       #templateFooter {
-        background-color: #49408d;
+        background-color: {{ section_background_color }};
         background-image: none;
         background-repeat: no-repeat;
         background-position: center;
@@ -516,11 +516,11 @@
                   id="templateHeader"
                   data-template-container=""
                   style="
-                    background: #49408d none no-repeat 50% 50% / cover;
+                    background: {{ section_background_color }} none no-repeat 50% 50% / cover;
                     mso-line-height-rule: exactly;
                     -ms-text-size-adjust: 100%;
                     -webkit-text-size-adjust: 100%;
-                    background-color: #49408d;
+                    background-color: {{ section_background_color }};
                     background-image: none;
                     background-repeat: no-repeat;
                     background-position: 50% 50%;
@@ -675,11 +675,11 @@
                   id="templateBody"
                   data-template-container=""
                   style="
-                    background: #49408d none no-repeat center/cover;
+                    background: {{ section_background_color }} none no-repeat center/cover;
                     mso-line-height-rule: exactly;
                     -ms-text-size-adjust: 100%;
                     -webkit-text-size-adjust: 100%;
-                    background-color: #49408d;
+                    background-color: {{ section_background_color }};
                     background-image: none;
                     background-repeat: no-repeat;
                     background-position: center;
@@ -800,7 +800,8 @@
                                           width="100%"
                                           style="
                                             min-width: 100% !important;
-                                            border: 6px solid #f7b4f1;
+                                            background-color: {{ section_background_color }};
+                                            border: 6px solid {{ section_border_color }};
                                             border-collapse: collapse;
                                             mso-table-lspace: 0pt;
                                             mso-table-rspace: 0pt;
@@ -889,7 +890,8 @@
                                   class="mcnImageCardBottomContent"
                                   width="100%"
                                   style="
-                                    border: 6px solid #f7b4f1;
+                                    background-color: {{ section.background_color | default(section_background_color, true) }};
+                                    border: 6px solid {{ section.border_color | default(section_border_color, true) }};
                                     border-collapse: collapse;
                                     mso-table-lspace: 0pt;
                                     mso-table-rspace: 0pt;
@@ -1032,7 +1034,8 @@
                                           width="100%"
                                           style="
                                             min-width: 100% !important;
-                                            border: 6px solid #f7b4f1;
+                                            background-color: {{ section_background_color }};
+                                            border: 6px solid {{ section_border_color }};
                                             border-collapse: collapse;
                                             mso-table-lspace: 0pt;
                                             mso-table-rspace: 0pt;
@@ -1126,9 +1129,7 @@
                                                 >
                                                   <strong
                                                     id="docs-internal-guid-a4e96894-7fff-0765-b22a-65a733c51a6e"
-                                                    >DCU Media Production
-                                                    Society Secretary
-                                                    25/26</strong
+                                                    >{{ email_end_role }}</strong
                                                   >
                                                 </p>
                                                 {{ TrackView }}
@@ -1169,11 +1170,11 @@
                   id="templateFooter"
                   data-template-container=""
                   style="
-                    background: #49408d none no-repeat center/cover;
+                    background: {{ section_background_color }} none no-repeat center/cover;
                     mso-line-height-rule: exactly;
                     -ms-text-size-adjust: 100%;
                     -webkit-text-size-adjust: 100%;
-                    background-color: #49408d;
+                    background-color: {{ section_background_color }};
                     background-image: none;
                     background-repeat: no-repeat;
                     background-position: center;
@@ -1834,7 +1835,7 @@
                                       >
                                         <span style="color: #ffffff"
                                           ><em
-                                            >Copyright © *|2026|* *|DCUMPS|*,
+                                            >Copyright © *|{{ copyright_year }}|* *|DCUMPS|*,
                                             All rights reserved.</em
                                           ><br />
                                           <p style="color: #ffffff">Newsletter generator developed by <a href="https://jakefarrell.ie/?utm_source=mps_newsletter" target="_blank"><strong>Jake Farrell</strong></a></p>
