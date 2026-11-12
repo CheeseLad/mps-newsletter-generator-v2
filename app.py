@@ -3,7 +3,7 @@ import io
 import re
 from datetime import datetime
 from flask import Flask, render_template, request, send_file, jsonify, flash, redirect, url_for, send_from_directory
-from generator import generate_newsletter_from_url, YEAR_CONFIGS
+from generator import generate_newsletter_from_url, load_year_configs, update_year_config
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -47,7 +47,7 @@ def index():
                 error_message=error_message,
                 doc_url=doc_url,
                 year=year,
-                year_configs=YEAR_CONFIGS
+                year_configs=load_year_configs()
             )
 
         try:
@@ -93,7 +93,7 @@ def index():
         error_message=error_message,
         doc_url=doc_url,
         year=year,
-        year_configs=YEAR_CONFIGS
+        year_configs=load_year_configs()
     )
 
 
@@ -109,6 +109,9 @@ def api_generate():
         return jsonify({"success": False, "error": "Please provide a Google Doc URL."}), 400
 
     try:
+        if overrides and isinstance(overrides, dict):
+            update_year_config(year, overrides)
+
         # Zipline configuration is strictly managed server-side
         zipline_url = os.environ.get("ZIPLINE_URL", "http://localhost:3000")
         zipline_token = os.environ.get("ZIPLINE_TOKEN", "")
@@ -138,6 +141,23 @@ def api_generate():
         return jsonify({"success": False, "error": str(e)}), 400
     except Exception as e:
         return jsonify({"success": False, "error": f"An unexpected error occurred: {str(e)}"}), 500
+
+
+@app.route("/api/config", methods=["POST"])
+def api_save_config():
+    """Persist year & theme configuration changes to config.json."""
+    data = request.get_json(silent=True) or {}
+    year = (data.get("year") or "").strip()
+    config_data = data.get("config")
+
+    if not year or not isinstance(config_data, dict):
+        return jsonify({"success": False, "error": "Invalid year or config payload."}), 400
+
+    try:
+        updated_configs = update_year_config(year, config_data)
+        return jsonify({"success": True, "configs": updated_configs})
+    except Exception as e:
+        return jsonify({"success": False, "error": f"Failed to save config.json: {str(e)}"}), 500
 
 
 @app.route("/health", methods=["GET"])
