@@ -3,7 +3,7 @@ import io
 import re
 from datetime import datetime
 from flask import Flask, render_template, request, send_file, jsonify, flash, redirect, url_for, send_from_directory
-from generator import generate_newsletter_from_url
+from generator import generate_newsletter_from_url, YEAR_CONFIGS
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -46,7 +46,8 @@ def index():
                 "index.html",
                 error_message=error_message,
                 doc_url=doc_url,
-                year=year
+                year=year,
+                year_configs=YEAR_CONFIGS
             )
 
         try:
@@ -91,7 +92,8 @@ def index():
         "index.html",
         error_message=error_message,
         doc_url=doc_url,
-        year=year
+        year=year,
+        year_configs=YEAR_CONFIGS
     )
 
 
@@ -101,6 +103,7 @@ def api_generate():
     data = request.get_json(silent=True) or request.form
     doc_url = (data.get("doc_url") or "").strip()
     year = data.get("year", "2026-2027")
+    overrides = data.get("overrides") if isinstance(data, dict) else None
 
     if not doc_url:
         return jsonify({"success": False, "error": "Please provide a Google Doc URL."}), 400
@@ -115,7 +118,8 @@ def api_generate():
             year=year,
             template_dir=BASE_DIR,
             zipline_url=zipline_url,
-            zipline_token=zipline_token
+            zipline_token=zipline_token,
+            overrides=overrides
         )
         subject = result["subject"]
         safe_subject = re.sub(r'[^a-zA-Z0-9_\- ]+', '', subject).strip().replace(" ", "-")[:40]

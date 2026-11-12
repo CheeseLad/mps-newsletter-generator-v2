@@ -48,6 +48,51 @@ IMAGE_MAPPINGS_2025_2026 = {
     "first-year-rep": ""
 }
 
+# Default Year & Theme Configurations
+YEAR_CONFIGS = {
+    "2026-2027": {
+        "email_start": "You just got the weekly MPS email!",
+        "email_end_message": "Have an amazing week <3",
+        "email_end": "Seren Hassett Hilliard",
+        "email_end_role": "DCU Media Production Society Secretary 26/27",
+        "section_border_color": "#0D4C8F",
+        "section_background_color": "#7EA3E2",
+        "image_mappings": IMAGE_MAPPINGS_2026_2027,
+    },
+    "2025-2026": {
+        "email_start": "You've got mail! The MPS Weekly Email has hit your inbox!",
+        "email_end_message": "Have a great week!",
+        "email_end": "Jake Farrell",
+        "email_end_role": "DCU Media Production Society Secretary 25/26",
+        "section_border_color": "#f7b4f1",
+        "section_background_color": "#49408d",
+        "image_mappings": IMAGE_MAPPINGS_2025_2026,
+    },
+}
+
+
+def get_year_config(year: str = "2026-2027", overrides: dict = None) -> dict:
+    """Return a copy of the configuration for the given year merged with any session overrides."""
+    base_key = "2025-2026" if year == "2025-2026" else "2026-2027"
+    cfg = copy.deepcopy(YEAR_CONFIGS[base_key])
+    if overrides and isinstance(overrides, dict):
+        for key in (
+            "email_start",
+            "email_end_message",
+            "email_end",
+            "email_end_role",
+            "section_border_color",
+            "section_background_color",
+        ):
+            if key in overrides and overrides[key] is not None:
+                cfg[key] = str(overrides[key])
+        if "image_mappings" in overrides and isinstance(overrides["image_mappings"], dict):
+            for img_key, img_val in overrides["image_mappings"].items():
+                if img_key in cfg["image_mappings"] and img_val is not None:
+                    cfg["image_mappings"][img_key] = str(img_val).strip()
+    return cfg
+
+
 # Recognized Section Headers
 KNOWN_SECTIONS = [
     "EMAIL SUBJECT",
@@ -258,7 +303,8 @@ def generate_newsletter_from_html(
     template_dir: str = ".",
     images_data: dict = None,
     zipline_url: str = None,
-    zipline_token: str = None
+    zipline_token: str = None,
+    overrides: dict = None
 ) -> dict:
     """
     Generate the complete newsletter HTML from raw Google Doc HTML.
@@ -274,20 +320,15 @@ def generate_newsletter_from_html(
         zipline_token=zipline_token
     )
 
-    # Determine year configuration
-    if year == "2025-2026":
-        image_mappings = IMAGE_MAPPINGS_2025_2026
-        email_end = "Jake Farrell"
-        email_end_role = "DCU Media Production Society Secretary 25/26"
-        section_border_color = "#f7b4f1"
-        section_background_color = "#49408d"
-    else:
-        # Default: 2026-2027
-        image_mappings = IMAGE_MAPPINGS_2026_2027
-        email_end = "Seren Hassett Hilliard"
-        email_end_role = "DCU Media Production Society Secretary 26/27"
-        section_border_color = "#0D4C8F"
-        section_background_color = "#7EA3E2"
+    # Determine year configuration (merged with any user overrides)
+    cfg = get_year_config(year, overrides=overrides)
+    image_mappings = cfg["image_mappings"]
+    email_start = cfg["email_start"]
+    email_end_message = cfg["email_end_message"]
+    email_end = cfg["email_end"]
+    email_end_role = cfg["email_end_role"]
+    section_border_color = cfg["section_border_color"]
+    section_background_color = cfg["section_background_color"]
 
     sections = []
 
@@ -319,12 +360,12 @@ def generate_newsletter_from_html(
         })
 
     email_subject = results.get("EMAIL SUBJECT", ["MPS Weekly Newsletter"])[0]
-    email_start = results.get("EMAIL START", ["You've got mail! The MPS Weekly Email has hit your inbox!"])[0]
 
     context = {
         "email_subject": email_subject,
         "header_image": image_mappings.get("logo", ""),
         "email_start": email_start,
+        "email_end_message": email_end_message,
         "email_end": email_end,
         "email_end_role": email_end_role,
         "copyright_year": datetime.now().year,
@@ -354,7 +395,8 @@ def generate_newsletter_from_url(
     year: str = "2026-2027",
     template_dir: str = ".",
     zipline_url: str = None,
-    zipline_token: str = None
+    zipline_token: str = None,
+    overrides: dict = None
 ) -> dict:
     """Download Google Doc HTML and images from URL and generate newsletter."""
     raw_html, images_data = fetch_google_doc_data(doc_url)
@@ -364,6 +406,7 @@ def generate_newsletter_from_url(
         template_dir=template_dir,
         images_data=images_data,
         zipline_url=zipline_url,
-        zipline_token=zipline_token
+        zipline_token=zipline_token,
+        overrides=overrides
     )
 

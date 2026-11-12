@@ -267,6 +267,133 @@
       padding-right: 2.5rem;
     }
 
+    .year-picker-row {
+      display: flex;
+      align-items: stretch;
+      gap: 0.65rem;
+    }
+
+    .btn-edit-theme {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0 1.1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      font-family: inherit;
+      color: var(--gray-700);
+      background: var(--gray-50);
+      border: 1.5px solid var(--gray-300);
+      border-radius: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .btn-edit-theme:hover {
+      background: var(--gray-100);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-edit-theme.active {
+      background: var(--primary-light);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .theme-editor-panel {
+      display: none;
+      margin-top: 1rem;
+      padding: 1.35rem;
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+    }
+
+    .theme-editor-panel.open {
+      display: block;
+    }
+
+    .theme-editor-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-bottom: 1.15rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .theme-editor-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+
+    .theme-editor-subtitle {
+      font-size: 0.775rem;
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+
+    .theme-section-heading {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-600);
+      margin: 1rem 0 0.65rem;
+    }
+
+    .theme-section-heading:first-of-type {
+      margin-top: 0;
+    }
+
+    .theme-editor-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+    }
+
+    @media (min-width: 640px) {
+      .theme-editor-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .theme-field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: 0.3rem;
+    }
+
+    .theme-field .form-control {
+      padding: 0.6rem 0.85rem;
+      font-size: 0.85rem;
+      border-radius: 8px;
+    }
+
+    .color-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .color-swatch-input {
+      width: 40px;
+      height: 38px;
+      padding: 2px;
+      border: 1.5px solid var(--gray-300);
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
     .btn-group {
       display: flex;
       flex-direction: column;
@@ -648,14 +775,83 @@
           <div class="form-grid">
             <div class="form-group" style="margin-bottom: 0;">
               <label for="year" class="form-label">Committee Year &amp; Theme</label>
-              <select id="year" name="year" class="form-control">
-                <option value="2026-2027" {% if year=='2026-2027' or not year %}selected{% endif %}>
-                  2026-2027 (Seren Hassett Hilliard - Blue Theme)
-                </option>
-                <option value="2025-2026" {% if year=='2025-2026' %}selected{% endif %}>
-                  2025-2026 (Jake Farrell - Purple Theme)
-                </option>
-              </select>
+              <div class="year-picker-row">
+                <button type="button" class="btn-edit-theme" id="btn-toggle-theme-editor" title="Edit Year &amp; Theme Values">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="21" x2="4" y2="14"></line>
+                    <line x1="4" y1="10" x2="4" y2="3"></line>
+                    <line x1="12" y1="21" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12" y2="3"></line>
+                    <line x1="20" y1="21" x2="20" y2="16"></line>
+                    <line x1="20" y1="12" x2="20" y2="3"></line>
+                    <line x1="1" y1="14" x2="7" y2="14"></line>
+                    <line x1="9" y1="8" x2="15" y2="8"></line>
+                    <line x1="17" y1="16" x2="23" y2="16"></line>
+                  </svg>
+                  Edit Values
+                </button>
+                <select id="year" name="year" class="form-control">
+                  <option value="2026-2027" {% if year=='2026-2027' or not year %}selected{% endif %}>
+                    2026-2027 (Seren Hassett Hilliard - Blue Theme)
+                  </option>
+                  <option value="2025-2026" {% if year=='2025-2026' %}selected{% endif %}>
+                    2025-2026 (Jake Farrell - Purple Theme)
+                  </option>
+                </select>
+              </div>
+
+              <!-- Collapsible Session-Only Theme & Year Values Editor -->
+              <div class="theme-editor-panel" id="theme-editor-panel">
+                <div class="theme-editor-header">
+                  <div>
+                    <div class="theme-editor-title">Customize Year &amp; Theme Values</div>
+                    <div class="theme-editor-subtitle">Temporary changes for this session — reloading the page restores defaults.</div>
+                  </div>
+                  <button type="button" class="btn-copy-sm" id="btn-reset-theme">Reset to Defaults</button>
+                </div>
+
+                <div class="theme-section-heading">Theme Colours</div>
+                <div class="theme-editor-grid">
+                  <div class="theme-field">
+                    <label for="cfg-bg-color">Background Colour</label>
+                    <div class="color-input-group">
+                      <input type="color" id="cfg-bg-color-picker" class="color-swatch-input" value="#7EA3E2">
+                      <input type="text" id="cfg-bg-color" class="form-control" data-cfg-key="section_background_color">
+                    </div>
+                  </div>
+                  <div class="theme-field">
+                    <label for="cfg-border-color">Section Border Colour</label>
+                    <div class="color-input-group">
+                      <input type="color" id="cfg-border-color-picker" class="color-swatch-input" value="#0D4C8F">
+                      <input type="text" id="cfg-border-color" class="form-control" data-cfg-key="section_border_color">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="theme-section-heading">Email Text &amp; Sign-off</div>
+                <div class="theme-editor-grid">
+                  <div class="theme-field">
+                    <label for="cfg-email-start">Opening Banner Text</label>
+                    <input type="text" id="cfg-email-start" class="form-control" data-cfg-key="email_start">
+                  </div>
+                  <div class="theme-field">
+                    <label for="cfg-email-end-msg">Sign-off Message</label>
+                    <input type="text" id="cfg-email-end-msg" class="form-control" data-cfg-key="email_end_message">
+                  </div>
+                  <div class="theme-field">
+                    <label for="cfg-email-end">Secretary Name</label>
+                    <input type="text" id="cfg-email-end" class="form-control" data-cfg-key="email_end">
+                  </div>
+                  <div class="theme-field">
+                    <label for="cfg-email-end-role">Secretary Role Title</label>
+                    <input type="text" id="cfg-email-end-role" class="form-control" data-cfg-key="email_end_role">
+                  </div>
+                </div>
+
+                <div class="theme-section-heading">Section Banner Image URLs</div>
+                <div class="theme-editor-grid" id="theme-images-grid"></div>
+              </div>
             </div>
           </div>
 
@@ -744,6 +940,135 @@
     let lastGeneratedHtml = "";
     let lastGeneratedFilename = "mps-email.html";
 
+    // Default year configurations from server (resets on page reload)
+    const defaultYearConfigs = {{ (year_configs or {}) | tojson }};
+    const sessionYearConfigs = JSON.parse(JSON.stringify(defaultYearConfigs));
+
+    const imageFieldLabels = [
+      ["logo", "Header Logo"],
+      ["secretary", "Secretary Banner"],
+      ["chairperson", "Chairperson Banner"],
+      ["vice-chair", "Vice-Chair Banner"],
+      ["events", "Events Banner"],
+      ["tv-managers", "TV Managers Banner"],
+      ["tv-members-section", "TV Members Section Banner"],
+      ["fm-managers", "FM Managers Banner"],
+      ["fm-members-section", "FM Members Section Banner"],
+      ["the-college-view", "The College View Banner"],
+      ["tcv-members-section", "TCV Members Section Banner"],
+      ["pro", "PRO Banner"],
+      ["treasurer", "Treasurer Banner"],
+      ["sponsorship", "Sponsorship Banner"],
+      ["webmaster", "Webmaster Banner"],
+      ["first-year-rep", "First Year Rep Banner"]
+    ];
+
+    // Build image URL inputs inside #theme-images-grid
+    const imagesGrid = document.getElementById("theme-images-grid");
+    imageFieldLabels.forEach(([key, label]) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "theme-field";
+      const lbl = document.createElement("label");
+      lbl.setAttribute("for", `cfg-img-${key}`);
+      lbl.textContent = label;
+      const inp = document.createElement("input");
+      inp.type = "text";
+      inp.id = `cfg-img-${key}`;
+      inp.className = "form-control";
+      inp.placeholder = "https://...";
+      inp.setAttribute("data-img-key", key);
+      inp.addEventListener("input", () => {
+        const yr = document.getElementById("year").value;
+        if (sessionYearConfigs[yr] && sessionYearConfigs[yr].image_mappings) {
+          sessionYearConfigs[yr].image_mappings[key] = inp.value;
+        }
+      });
+      wrapper.appendChild(lbl);
+      wrapper.appendChild(inp);
+      imagesGrid.appendChild(wrapper);
+    });
+
+    function loadThemeEditorForYear(yr) {
+      const cfg = sessionYearConfigs[yr];
+      if (!cfg) return;
+
+      document.querySelectorAll("[data-cfg-key]").forEach(inp => {
+        const key = inp.getAttribute("data-cfg-key");
+        inp.value = cfg[key] !== undefined ? cfg[key] : "";
+      });
+
+      const bgPicker = document.getElementById("cfg-bg-color-picker");
+      const borderPicker = document.getElementById("cfg-border-color-picker");
+      if (/^#[0-9a-fA-F]{6}$/.test(cfg.section_background_color || "")) {
+        bgPicker.value = cfg.section_background_color;
+      }
+      if (/^#[0-9a-fA-F]{6}$/.test(cfg.section_border_color || "")) {
+        borderPicker.value = cfg.section_border_color;
+      }
+
+      document.querySelectorAll("[data-img-key]").forEach(inp => {
+        const imgKey = inp.getAttribute("data-img-key");
+        inp.value = (cfg.image_mappings && cfg.image_mappings[imgKey]) || "";
+      });
+    }
+
+    // Bind text/color config inputs
+    document.querySelectorAll("[data-cfg-key]").forEach(inp => {
+      inp.addEventListener("input", () => {
+        const yr = document.getElementById("year").value;
+        const key = inp.getAttribute("data-cfg-key");
+        if (sessionYearConfigs[yr]) {
+          sessionYearConfigs[yr][key] = inp.value;
+          if (key === "section_background_color" && /^#[0-9a-fA-F]{6}$/.test(inp.value.trim())) {
+            document.getElementById("cfg-bg-color-picker").value = inp.value.trim();
+          }
+          if (key === "section_border_color" && /^#[0-9a-fA-F]{6}$/.test(inp.value.trim())) {
+            document.getElementById("cfg-border-color-picker").value = inp.value.trim();
+          }
+        }
+      });
+    });
+
+    document.getElementById("cfg-bg-color-picker").addEventListener("input", (e) => {
+      const yr = document.getElementById("year").value;
+      const val = e.target.value;
+      document.getElementById("cfg-bg-color").value = val;
+      if (sessionYearConfigs[yr]) sessionYearConfigs[yr].section_background_color = val;
+    });
+
+    document.getElementById("cfg-border-color-picker").addEventListener("input", (e) => {
+      const yr = document.getElementById("year").value;
+      const val = e.target.value;
+      document.getElementById("cfg-border-color").value = val;
+      if (sessionYearConfigs[yr]) sessionYearConfigs[yr].section_border_color = val;
+    });
+
+    // Toggle editor panel
+    document.getElementById("btn-toggle-theme-editor").addEventListener("click", (e) => {
+      const panel = document.getElementById("theme-editor-panel");
+      const btn = e.currentTarget;
+      panel.classList.toggle("open");
+      btn.classList.toggle("active");
+    });
+
+    // Switch year updates editor values
+    document.getElementById("year").addEventListener("change", (e) => {
+      loadThemeEditorForYear(e.target.value);
+    });
+
+    // Reset current year values to defaults
+    document.getElementById("btn-reset-theme").addEventListener("click", () => {
+      const yr = document.getElementById("year").value;
+      if (defaultYearConfigs[yr]) {
+        sessionYearConfigs[yr] = JSON.parse(JSON.stringify(defaultYearConfigs[yr]));
+        loadThemeEditorForYear(yr);
+        showToast(`Reset ${yr} values to defaults!`);
+      }
+    });
+
+    // Initialize editor fields for initial year
+    loadThemeEditorForYear(document.getElementById("year").value);
+
     // Fill sample URL
     document.getElementById("btn-fill-sample").addEventListener("click", () => {
       document.getElementById("doc_url").value = sampleUrl;
@@ -812,7 +1137,8 @@
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             doc_url: docUrl,
-            year: year
+            year: year,
+            overrides: sessionYearConfigs[year] || null
           })
         });
 
