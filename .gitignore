@@ -4,3 +4,4 @@ tmp/
 tmp_awards/
 *.json
 email_docs.py
+.env

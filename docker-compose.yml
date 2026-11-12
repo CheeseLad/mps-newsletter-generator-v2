@@ -1,0 +1,14 @@
+services:
+  newsletter-generator:
+    build: .
+    container_name: mps-newsletter-generator
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - FLASK_ENV=production
+      - PYTHONUNBUFFERED=1
+      - ZIPLINE_URL=${ZIPLINE_URL:-http://localhost:3000}
+      - ZIPLINE_TOKEN=${ZIPLINE_TOKEN:-}
+    restart: unless-stopped
+
