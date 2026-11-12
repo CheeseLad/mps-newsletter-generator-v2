@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MPS Email Generator | DCU Media Production Society</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='logo.png') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0D4C8F;
+      --primary-hover: #093768;
+      --primary-light: #e8f0fe;
+      --accent: #7EA3E2;
+      --dark: #0f172a;
+      --gray-50: #f8fafc;
+      --gray-100: #f1f5f9;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e1;
+      --gray-600: #475569;
+      --gray-700: #334155;
+      --success: #10b981;
+      --danger: #ef4444;
+      --radius: 12px;
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 25px -3px rgb(13 76 143 / 0.12), 0 4px 6px -4px rgb(13 76 143 / 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f0f4f8 0%, #e2eaf4 100%);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      line-height: 1.5;
+    }
+
+    header {
+      background: white;
+      border-bottom: 1px solid var(--gray-200);
+      padding: 1.25rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      text-decoration: none;
+      color: var(--dark);
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      object-fit: contain;
+      display: block;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .brand-text h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary);
+      line-height: 1.2;
+    }
+
+    .brand-text p {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--success);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.95);
+        opacity: 0.8;
+      }
+
+      50% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(0.95);
+        opacity: 0.8;
+      }
+    }
+
+    main {
+      flex: 1;
+      max-width: 1280px;
+      width: 100%;
+      margin: 2.5rem auto;
+      padding: 0 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 2rem 2.25rem 1.5rem;
+      background: linear-gradient(to bottom, #ffffff, #fafcff);
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .card-header h2 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 0.4rem;
+      letter-spacing: -0.5px;
+    }
+
+    .card-header p {
+      color: var(--gray-600);
+      font-size: 0.95rem;
+    }
+
+    .card-body {
+      padding: 2.25rem;
+    }
+
+    .alert {
+      padding: 1rem 1.25rem;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+    }
+
+    .alert-danger {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+      color: var(--gray-700);
+    }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.9rem 1.15rem;
+      font-size: 0.95rem;
+      border: 1.5px solid var(--gray-300);
+      border-radius: 10px;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      background: white;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(13, 76, 143, 0.15);
+    }
+
+    .form-hint {
+      margin-top: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--gray-600);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .doc-sharing-tip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .btn-sample {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .btn-sample:hover {
+      color: var(--primary-hover);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.75rem;
+    }
+
+    select.form-control {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23475569' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1em;
+      padding-right: 2.5rem;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+    }
+
+    @media (min-width: 640px) {
+      .btn-group {
+        flex-direction: row;
+      }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      padding: 0.95rem 1.6rem;
+      font-size: 0.95rem;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      text-decoration: none;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 12px rgba(13, 76, 143, 0.25);
+      flex: 1;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(13, 76, 143, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--gray-100);
+      color: var(--gray-700);
+      border: 1px solid var(--gray-200);
+    }
+
+    .btn-secondary:hover {
+      background: var(--gray-200);
+      color: var(--dark);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Loading Overlay */
+    .loading-state {
+      display: none;
+      text-align: center;
+      padding: 2.5rem 1rem;
+    }
+
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid var(--gray-200);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 1.25rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .loading-state h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 0.25rem;
+    }
+
+    .loading-state p {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+
+    /* Preview & Results Panel */
+    .results-container {
+      display: none;
+      margin-top: 2rem;
+      border-top: 1px solid var(--gray-200);
+      padding-top: 2rem;
+    }
+
+    .results-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .subject-box {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .subject-info {
+      flex: 1;
+    }
+
+    .subject-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gray-600);
+    }
+
+    .subject-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--dark);
+      word-break: break-word;
+    }
+
+    .btn-copy-sm {
+      background: white;
+      border: 1px solid var(--gray-300);
+      color: var(--gray-700);
+      padding: 0.45rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-copy-sm:hover {
+      background: var(--gray-100);
+      color: var(--dark);
+      border-color: var(--gray-400);
+    }
+
+    .sections-pill-container {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.5rem;
+    }
+
+    .pill-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      margin-right: 0.25rem;
+    }
+
+    .section-pill {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .tab-nav {
+      display: flex;
+      border-bottom: 1px solid var(--gray-200);
+      margin-bottom: 1.25rem;
+      gap: 0.5rem;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 0.65rem 1.2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--gray-600);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    .preview-frame-wrapper {
+      border: 1px solid var(--gray-300);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #49408d;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+
+    .preview-iframe {
+      width: 100%;
+      height: 650px;
+      border: none;
+      display: block;
+      background: white;
+    }
+
+    .code-container {
+      position: relative;
+      border: 1px solid var(--gray-300);
+      border-radius: 10px;
+      overflow: hidden;
+      background: #0f172a;
+    }
+
+    .code-toolbar {
+      padding: 0.6rem 1rem;
+      background: #1e293b;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #334155;
+    }
+
+    .code-lang {
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+    }
+
+    .code-area {
+      width: 100%;
+      height: 450px;
+      background: transparent;
+      color: #f1f5f9;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      padding: 1rem;
+      border: none;
+      resize: vertical;
+      line-height: 1.6;
+      white-space: pre;
+    }
+
+    .code-area:focus {
+      outline: none;
+    }
+
+    footer {
+      background: white;
+      border-top: 1px solid var(--gray-200);
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.825rem;
+      color: var(--gray-600);
+      margin-top: auto;
+    }
+
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--dark);
+      color: white;
+      padding: 0.75rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="brand">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="MPS Logo" class="brand-logo"
+        onerror="this.onerror=null; this.src='/assets/logo.png';">
+      <div class="brand-text">
+        <h1>DCU Media Production Society</h1>
+        <p>Weekly Email Generator</p>
+      </div>
+    </div>
+    <!-- <div class="status-badge">
+      <span class="status-dot"></span> Ready
+    </div> -->
+  </header>
+
+  <main>
+    <div class="card">
+      <div class="card-header">
+        <h2>Generate MPS Weekly Email</h2>
+        <p>Paste the Google Doc link filled in by the committee to generate a Listmonk-ready HTML email.</p>
+      </div>
+
+      <div class="card-body">
+        {% if error_message %}
+        <div class="alert alert-danger" id="server-alert">
+          <div>
+            <strong>Generation Failed:</strong> {{ error_message }}
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="alert alert-danger" id="client-alert" style="display: none;">
+          <div id="client-alert-msg"></div>
+        </div>
+
+        <form id="generator-form" action="/" method="POST">
+          <div class="form-group">
+            <label for="doc_url" class="form-label">Google Doc Share Link</label>
+            <div class="input-wrapper">
+              <input type="text" id="doc_url" name="doc_url" class="form-control"
+                placeholder="https://docs.google.com/document/d/.../edit?usp=sharing" value="{{ doc_url or '' }}"
+                required>
+            </div>
+            <div class="form-hint">
+              <span class="doc-sharing-tip">
+                Ensure sharing is set to <strong>"Anyone with the link can view"</strong>
+              </span>
+              <button type="button" class="btn-sample" id="btn-fill-sample">Try sample doc link</button>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group" style="margin-bottom: 0;">
+              <label for="year" class="form-label">Committee Year &amp; Theme</label>
+              <select id="year" name="year" class="form-control">
+                <option value="2026-2027" {% if year=='2026-2027' or not year %}selected{% endif %}>
+                  2026-2027 (Seren Hassett Hilliard - Blue Theme)
+                </option>
+                <option value="2025-2026" {% if year=='2025-2026' %}selected{% endif %}>
+                  2025-2026 (Jake Farrell - Purple Theme)
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="btn-group">
+            <button type="submit" class="btn btn-primary" id="btn-generate">
+              Generate Email
+            </button>
+          </div>
+        </form>
+
+        <!-- Loading State -->
+        <div class="loading-state" id="loading-spinner">
+          <div class="spinner"></div>
+          <h3>Generating your email...</h3>
+          <p>Downloading from Google Docs, formatting sections, and compiling Listmonk template.</p>
+        </div>
+
+        <!-- Results / Preview Panel -->
+        <div class="results-container" id="results-panel">
+          <div class="subject-box">
+            <div class="subject-info">
+              <div class="subject-label">Email Subject</div>
+              <div class="subject-title" id="res-subject">MPS Weekly Email</div>
+            </div>
+            <button type="button" class="btn-copy-sm" id="btn-copy-subject">
+              Copy Subject
+            </button>
+          </div>
+
+          <div class="sections-pill-container" id="res-sections-wrapper">
+            <span class="pill-label">Detected Sections:</span>
+            <div id="res-sections" style="display: flex; gap: 0.35rem; flex-wrap: wrap;"></div>
+          </div>
+
+          <div class="results-header">
+            <div class="tab-nav">
+              <button class="tab-btn active" data-tab="tab-preview">Visual Preview</button>
+              <button class="tab-btn" data-tab="tab-code">HTML Source</button>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn-copy-sm" id="btn-download-result">
+                Download .html
+              </button>
+              <button type="button" class="btn-copy-sm" id="btn-copy-result">
+                Copy .html
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab 1: Visual Preview -->
+          <div class="tab-pane active" id="tab-preview">
+            <div class="preview-frame-wrapper">
+              <iframe class="preview-iframe" id="preview-iframe"></iframe>
+            </div>
+          </div>
+
+          <!-- Tab 2: HTML Source Code -->
+          <div class="tab-pane" id="tab-code">
+            <div class="code-container">
+              <div class="code-toolbar">
+                <span class="code-lang">HTML Email (Listmonk Ready)</span>
+                <button type="button" class="btn-copy-sm" id="btn-copy-html">
+                  Copy All HTML
+                </button>
+              </div>
+              <textarea class="code-area" id="code-output" readonly></textarea>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>
+      Made with ❤️ by <a href="https://jakefarrell.ie/?utm_source=mps_email_generator" target="_blank">Jake
+        Farrell</a>
+    </p>
+  </footer>
+
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <script>
+    const sampleUrl = "https://docs.google.com/document/d/11uTgoWKpr1yEVslZfo3zmMGJFqaHGRg7oaGuQMULCi0/edit?usp=sharing";
+    let lastGeneratedHtml = "";
+    let lastGeneratedFilename = "mps-email.html";
+
+    // Fill sample URL
+    document.getElementById("btn-fill-sample").addEventListener("click", () => {
+      document.getElementById("doc_url").value = sampleUrl;
+      document.getElementById("doc_url").focus();
+    });
+
+    // Toast helper
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2500);
+    }
+
+    // Tab switching
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById(btn.getAttribute("data-tab")).classList.add("active");
+      });
+    });
+
+    // Alert helper
+    function showError(msg) {
+      const alertBox = document.getElementById("client-alert");
+      const alertMsg = document.getElementById("client-alert-msg");
+      alertMsg.textContent = msg;
+      alertBox.style.display = "flex";
+      const serverAlert = document.getElementById("server-alert");
+      if (serverAlert) serverAlert.style.display = "none";
+    }
+
+    function clearError() {
+      document.getElementById("client-alert").style.display = "none";
+      const serverAlert = document.getElementById("server-alert");
+      if (serverAlert) serverAlert.style.display = "none";
+    }
+
+    // AJAX Preview & Generation
+    async function performGeneration() {
+      const docUrl = document.getElementById("doc_url").value.trim();
+      const year = document.getElementById("year").value;
+
+      if (!docUrl) {
+        showError("Please enter a Google Doc link.");
+        document.getElementById("doc_url").focus();
+        return;
+      }
+
+      clearError();
+      const loading = document.getElementById("loading-spinner");
+      const resultsPanel = document.getElementById("results-panel");
+      const btnGenerate = document.getElementById("btn-generate");
+
+      loading.style.display = "block";
+      resultsPanel.style.display = "none";
+      btnGenerate.disabled = true;
+
+      try {
+        const response = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            doc_url: docUrl,
+            year: year
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.error || "Failed to generate email.");
+        }
+
+        lastGeneratedHtml = data.html;
+        lastGeneratedFilename = data.filename || "mps-email.html";
+
+        // Fill results
+        document.getElementById("res-subject").textContent = data.subject || "MPS Weekly Email";
+        document.getElementById("code-output").value = data.html;
+
+        // Render sections pills
+        const pillContainer = document.getElementById("res-sections");
+        pillContainer.innerHTML = "";
+        if (data.sections && data.sections.length > 0) {
+          data.sections.forEach(sec => {
+            const pill = document.createElement("span");
+            pill.className = "section-pill";
+            pill.textContent = sec;
+            pillContainer.appendChild(pill);
+          });
+          document.getElementById("res-sections-wrapper").style.display = "flex";
+        } else {
+          document.getElementById("res-sections-wrapper").style.display = "none";
+        }
+
+        // Render preview in iframe safely
+        const iframe = document.getElementById("preview-iframe");
+        const doc = iframe.contentWindow.document;
+        doc.open();
+        doc.write(data.html);
+        doc.close();
+
+        resultsPanel.style.display = "block";
+        resultsPanel.scrollIntoView({ behavior: "smooth" });
+
+      } catch (err) {
+        showError(err.message || "An error occurred while generating the email.");
+      } finally {
+        loading.style.display = "none";
+        btnGenerate.disabled = false;
+      }
+    }
+
+    // Client-side file downloader
+    function downloadFile(filename, content) {
+      const blob = new Blob([content], { type: "text/html;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Event listeners
+    document.getElementById("generator-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      performGeneration();
+    });
+
+    document.getElementById("btn-download-result").addEventListener("click", () => {
+      if (lastGeneratedHtml) {
+        downloadFile(lastGeneratedFilename, lastGeneratedHtml);
+        showToast("Email downloaded!");
+      }
+    });
+
+    document.getElementById("btn-copy-result").addEventListener("click", () => {
+      const html = lastGeneratedHtml || document.getElementById("code-output").value;
+      if (html) {
+        navigator.clipboard.writeText(html).then(() => {
+          showToast("Full HTML copied to clipboard!");
+        });
+      }
+    });
+
+    // Copy Subject
+    document.getElementById("btn-copy-subject").addEventListener("click", () => {
+      const subject = document.getElementById("res-subject").textContent;
+      navigator.clipboard.writeText(subject).then(() => {
+        showToast("Subject line copied to clipboard!");
+      });
+    });
+
+    // Copy HTML
+    document.getElementById("btn-copy-html").addEventListener("click", () => {
+      const html = document.getElementById("code-output").value;
+      navigator.clipboard.writeText(html).then(() => {
+        showToast("Full HTML copied to clipboard!");
+      });
+    });
+  </script>
+</body>
+
+</html>
